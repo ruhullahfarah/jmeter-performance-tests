@@ -1,24 +1,26 @@
 pipeline {
   agent any
-
   stages {
-    stage('Run JMeter') {
+    stage('Checkout') {
       steps {
-        sh 'jmeter -n -t simple-api-test.jmx -l results.jtl -e -o reports'
+        checkout scm
       }
     }
-  }
-
-  post {
-    always {
-      publishHTML([
-        allowMissing: false,
-        alwaysLinkToLastBuild: true,
-        keepAll: true,
-        reportDir: 'reports',
-        reportFiles: 'index.html',
-        reportName: 'JMeter Test Report'
-      ])
+    stage('Run JMeter') {
+      steps {
+        // Use bat on Windows instead of sh
+        bat 'jmeter -n -t testplan.jmx -l result.jtl -e -o reports'
+      }
+    }
+    stage('Publish Report') {
+      steps {
+        publishHTML([allowMissing: false,
+                     alwaysLinkToLastBuild: true,
+                     keepAll: true,
+                     reportDir: 'reports',
+                     reportFiles: 'index.html',
+                     reportName: 'JMeter Test Report'])
+      }
     }
   }
 }
