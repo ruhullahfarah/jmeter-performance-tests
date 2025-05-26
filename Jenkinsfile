@@ -9,7 +9,7 @@ pipeline {
     stage('Run JMeter') {
       steps {
         // Use bat on Windows instead of sh
-        bat 'jmeter -n -t testplan.jmx -l result.jtl -e -o reports'
+        bat 'jmeter -n -t simple-api-test.jmx -l result.jtl -e -o reports'
       }
     }
     stage('Publish Report') {
